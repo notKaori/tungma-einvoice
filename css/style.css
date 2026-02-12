@@ -1,0 +1,8 @@
+.hidden {
+    display: none;
+}
+
+.card-header {
+    background-color: #969680;
+    color: white;
+}

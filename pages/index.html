@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tungma E-Invoice</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="bg-light">
+    
+    <div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-header text-white py-3 d-flex align-items-center">
+                <img src="../assets/images/tungma-logo-3-removebg-preview.png" alt="Tung Ma Logo" style="height: 100px;" class="me-3">
+                <h1 class="h3 mb-0 ms-3">Tung Ma Express E-Invoice Validation Form</h1>
+            </div>
+            <div class="card-body">
+                <p class="mb-4 fw-semibold">Please enter your e-invoice details below:</p>
+                
+                <form id="einvoiceForm">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="bill_code" class="form-label">Bill Code:</label>
+                            <input type="text" class="form-control border-secondary" id="bill_code" name="bill_code" readonly>
+                            <input type="hidden" id="bill_id" name="bill_id">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="date" class="form-label">Date:</label>
+                            <input type="date" class="form-control border-secondary" id="date" name="date" readonly>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="amount" class="form-label">Amount:</label>
+                            <input type="text" class="form-control border-secondary" id="amount" name="amount" readonly>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="mb-3 customer-details">
+                        <label for="customer_type" class="form-label">Customer Type:</label>
+                        <select class="form-select border-secondary" id="customer_type" name="customer_type">
+                            <option value="individual">Individual</option>
+                            <option value="business">Business</option>
+                            <option value="government">Government</option>
+                        </select>
+                    </div>
+                    
+    <div id="business_fields" class="mb-3 customer-details hidden">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="business_registration_number" class="form-label">Business Registration Number:</label>
+                                <input type="text" class="form-control border-secondary" id="business_registration_number" name="business_registration_number">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="old_business_registration_number" class="form-label">Old Business Registration Number:</label>
+                                <input type="text" class="form-control border-secondary" id="old_business_registration_number" name="old_business_registration_number">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="sst_fields" class="mb-3 customer-details hidden">
+                        <label for="sst_registration_number" class="form-label">SST Registration Number:</label>
+                        <input type="text" class="form-control border-secondary" id="sst_registration_number" name="sst_registration_number">
+                    </div>
+
+                    <div id="msic_fields" class="mb-3 customer-details hidden">
+                        <label class="form-label">MSIC Code:</label>
+                        <div class="input-group">
+                            <div class="position-relative flex-grow-1">
+                                <input type="text" class="form-control border-secondary" id="msic_code_search" placeholder="Search code or description..." autocomplete="off">
+                                <div id="msic_results" class="list-group position-absolute w-100 shadow-sm" style="max-height: 200px; overflow-y: auto; display: none; z-index: 1000;"></div>
+                            </div>
+                            <button class="btn btn-outline-secondary" type="button" id="btn_add_msic">Add</button>
+                        </div>
+                        <input type="hidden" id="msic_code" name="msic_code">
+                        <div id="selected_msic_container" class="mt-2 d-flex flex-wrap gap-2"></div>
+                    </div>
+                    
+                    <div class="mb-3 customer-details">
+                        <label for="customer_name" class="form-label">Customer Name:</label>
+                        <input type="text" class="form-control border-secondary" id="customer_name" name="customer_name">
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3 customer-details">
+                            <label for="tin_number" class="form-label">TIN Number:</label>
+                            <input type="text" class="form-control border-secondary" id="tin_number" name="tin_number">   
+                        </div>
+                        <div class="col-md-6 mb-3 customer-details">
+                            <label for="contact_number" class="form-label">Contact Number:</label>
+                            <input type="text" class="form-control border-secondary" id="contact_number" name="contact_number">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3 customer-details">
+                        <label for="email_address" class="form-label">Email Address:</label>
+                        <input type="text" class="form-control border-secondary" id="email_address" name="email_address">
+                    </div>
+                    
+                    <div id="individual_fields" class="mb-3 customer-details">
+                        <label for="identification_number" class="form-label">Identification Number:</label>
+                        <input type="text" class="form-control border-secondary" id="identification_number" name="identification_number">
+                    </div>
+                    
+                    <div class="mb-3 customer-details">
+                        <label for="customer_address" class="form-label">Address:</label>
+                        <input type="text" class="form-control border-secondary" id="customer_address" name="customer_address">
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3 customer-details">
+                            <label for="customer_postcode" class="form-label">Postcode:</label>
+                            <input type="text" class="form-control border-secondary" id="customer_postcode" name="customer_postcode">
+                        </div>
+                        <div class="col-md-4 mb-3 customer-details">
+                            <label for="customer_city" class="form-label">City:</label>
+                            <input type="text" class="form-control border-secondary" id="customer_city" name="customer_city">
+                        </div>
+                        <div class="col-md-4 mb-3 customer-details">
+                            <label for="customer_state" class="form-label">State:</label>
+                            <input type="text" class="form-control border-secondary" id="customer_state" name="customer_state">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4 customer-details">
+                        <label for="customer_country" class="form-label">Country:</label>
+                        <input type="text" class="form-control border-secondary" id="customer_country" name="customer_country">
+                    </div>
+
+                    <button type="submit" class="btn btn-secondary w-100">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/main.js" defer></script>
+</body>
+</html>

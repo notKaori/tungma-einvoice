@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+    let originalDateTime = '';
 
     // --- 1. Auto-fill from URL Parameters ---
     const params = new URLSearchParams(window.location.search);
@@ -25,7 +26,42 @@ document.addEventListener('DOMContentLoaded', function () {
     // Bill Date (ensure format is YYYY-MM-DD for date inputs)
     if (params.has('date')) {
         const billDateInput = document.getElementById('date');
-        if (billDateInput) billDateInput.value = params.get('date');
+        if (billDateInput) {
+            // Strip any time component, keep only YYYY-MM-DD for the input
+            const rawDate = params.get('date');
+            originalDateTime = rawDate; // Preserve original for API
+            const dateOnly = rawDate.split(/[T ]/)[0];
+            billDateInput.value = dateOnly;
+
+            // Check if the bill date is older than 5 days
+            const billDate = new Date(dateOnly);
+            const today = new Date();
+            billDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+            const diffTime = today.getTime() - billDate.getTime();
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays > 5) {
+                // Show a nice SweetAlert notice
+                Swal.fire({
+                    title: 'Submission Period Exceeded',
+                    text: 'You have exceeded the submission date. E-Invoice can only be requested within 5 days of bill creation.',
+                    icon: 'error',
+                    confirmButtonColor: '#dc3545',
+                    allowOutsideClick: false
+                }).then(() => {
+                    const formContainer = document.getElementById('einvoiceForm');
+                    if (formContainer) {
+                        formContainer.innerHTML = `
+                            <div class="alert alert-danger text-center p-4 my-3" role="alert">
+                                <h4 class="alert-heading fw-bold mb-3">E-Invoice Request Expired</h4>
+                                <p class="mb-0">This bill was created on <strong>${billDate.toLocaleDateString('en-GB')}</strong>. E-invoice requests must be submitted within 5 days of the bill date. You are no longer able to request an e-invoice for this bill.</p>
+                            </div>
+                        `;
+                    }
+                });
+            }
+        }
     }
 
     // Amount
@@ -255,8 +291,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Prepare Payload
             const payload = {
-                Date: date,
-                Bill_id: billId,
+                date: date,
+                date_time: originalDateTime || date,
+                bill_id: billId,
                 amount: amount,
                 tin_number: tinNumber,
                 customer_name: document.getElementById('customer_name').value,
@@ -278,12 +315,10 @@ document.addEventListener('DOMContentLoaded', function () {
             if (customerType === 'business' || customerType === 'government') {
                 payload.business_reg_number = document.getElementById('business_registration_number').value;
                 payload.old_business_reg_number = document.getElementById('old_business_registration_number').value;
-                payload['identity type'] = 'BRN'; // Assuming BRN for business
+                payload['identity_type'] = 'BRN'; // Assuming BRN for business
             } else {
                 payload.customer_ic = document.getElementById('identification_number').value;
-                payload['identity type'] = 'NRIC'; // Assuming NRIC for individual/default
-                // Note: user didn't specify strict enum for identity type, assuming logical defaults or 'NRIC'/'Passport' mapping if needed. 
-                // For now, sending 'NRIC' or user input if there was a field (there isn't one explicitly requested yet).
+                payload['identity_type'] = document.getElementById('identity_type').value;
             }
 
             // Show Loading
